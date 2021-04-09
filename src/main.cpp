@@ -1,16 +1,19 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <iostream>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include  "../dep//stb/stb_image_write.h"
+
+#include "vec3.h"
 
 int main() {
 
     // image info
 
-    uint32_t image_width = 100;
-    uint32_t image_height = 100;
-    uint32_t image_channels = 4;
+    int image_width = 1920;
+    int image_height = 1080;
+    int image_channels = 4;
 
     // image data
 
@@ -20,6 +23,8 @@ int main() {
 
     uint32_t current_index = 0;
     for (int j = image_height-1; j >= 0; --j) {
+        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+
         for (int i = 0; i < image_width; ++i) {
             auto r = double(i) / (image_width-1);
             auto g = double(j) / (image_height-1);
@@ -41,6 +46,8 @@ int main() {
     stbi_write_png("render.png", image_width, image_height, image_channels, pixels, image_channels * image_width);
 
     free(pixels);
+    
+    std::cerr << "\nDone.\n";
 
     return 0;
 }
