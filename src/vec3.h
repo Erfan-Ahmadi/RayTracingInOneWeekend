@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <iostream>
 
 template <typename T>
 class basic_vec3 {
@@ -48,5 +49,64 @@ public:
     T e[3];
 };
 
+// vec3 Utility Functions
+
+template <typename T>
+inline std::ostream& operator<<(std::ostream &out, const basic_vec3<T> &v) {
+    return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
+}
+
+template <typename T>
+inline basic_vec3<T> operator+(const basic_vec3<T> &u, const basic_vec3<T> &v) {
+    return basic_vec3<T>(u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]);
+}
+
+template <typename T>
+inline basic_vec3<T> operator-(const basic_vec3<T> &u, const basic_vec3<T> &v) {
+    return basic_vec3<T>(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
+}
+
+template <typename T>
+inline basic_vec3<T> operator*(const basic_vec3<T> &u, const basic_vec3<T> &v) {
+    return basic_vec3<T>(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
+}
+
+template <typename T>
+inline basic_vec3<T> operator*(double t, const basic_vec3<T> &v) {
+    return basic_vec3<T>(t*v.e[0], t*v.e[1], t*v.e[2]);
+}
+
+template <typename T>
+inline basic_vec3<T> operator*(const basic_vec3<T> &v, double t) {
+    return t * v;
+}
+
+template <typename T>
+inline basic_vec3<T> operator/(basic_vec3<T> v, double t) {
+    return (1/t) * v;
+}
+
+template <typename T>
+inline double dot(const basic_vec3<T> &u, const basic_vec3<T> &v) {
+    return u.e[0] * v.e[0]
+         + u.e[1] * v.e[1]
+         + u.e[2] * v.e[2];
+}
+
+template <typename T>
+inline basic_vec3<T> cross(const basic_vec3<T> &u, const basic_vec3<T> &v) {
+    return basic_vec3<T>(u.e[1] * v.e[2] - u.e[2] * v.e[1],
+                u.e[2] * v.e[0] - u.e[0] * v.e[2],
+                u.e[0] * v.e[1] - u.e[1] * v.e[0]);
+}
+
+template <typename T>
+inline basic_vec3<T> unit_vector(basic_vec3<T> v) {
+    return v / v.length();
+}
+
 typedef basic_vec3<double> vec3;
 typedef basic_vec3<float> vec3f;
+
+typedef vec3 point3;   // 3D point
+typedef vec3 color;    // RGB color
