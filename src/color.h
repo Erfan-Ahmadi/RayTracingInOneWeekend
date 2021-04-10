@@ -10,9 +10,9 @@ void write_color(uint8_t * pixels, int i, int j, int width, int height, int samp
         int r_index = linearized_coord * 3;
 
         double scale = 1.0 / samples_per_pixel;
-        auto r = pixel_value.x() * scale;
-        auto g = pixel_value.y() * scale;
-        auto b = pixel_value.z() * scale;
+        auto r = std::sqrt(pixel_value.x() * scale);
+        auto g = std::sqrt(pixel_value.y() * scale);
+        auto b = std::sqrt(pixel_value.z() * scale);
 
         auto ir = static_cast<int>(256 * clamp(r, 0.0, 0.999));
         auto ig = static_cast<int>(256 * clamp(g, 0.0, 0.999));

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <math.h>
 #include <iostream>
 
 template <typename T>
@@ -43,6 +44,20 @@ public:
 
     T length_squared() const {
         return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
+    }
+
+    bool near_zero() const {
+        // Return true if the vector is close to zero in all dimensions.
+        const auto s = 1e-8;
+        return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
+    }
+
+    inline static basic_vec3<T> random() {
+        return basic_vec3<T>(random_double(), random_double(), random_double()); // fix later
+    }
+
+    inline static basic_vec3<T> random(double min, double max) {
+        return basic_vec3<T>(random_double(min,max), random_double(min,max), random_double(min,max)); // fix later
     }
 
 public:
@@ -106,7 +121,45 @@ inline basic_vec3<T> unit_vector(basic_vec3<T> v) {
 }
 
 typedef basic_vec3<double> vec3;
-typedef basic_vec3<float> vec3f;
+
+inline vec3 random_in_unit_sphere() {
+    while (true) {
+        auto p = vec3::random(-1,1);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
+}
+
+inline vec3 random_unit_vector() {
+    return unit_vector(random_in_unit_sphere());
+}
+
+inline vec3 random_in_unit_disk() {
+    while (true) {
+        auto p = vec3(random_double(-1,1), random_double(-1,1), 0);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
+}
+
+inline vec3 random_in_hemisphere(const vec3& normal) {
+    vec3 in_unit_sphere = random_in_unit_sphere();
+    if (dot(in_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+        return in_unit_sphere;
+    else
+        return -in_unit_sphere;
+}
+
+inline vec3 reflect(const vec3 & v, const vec3 & n) {
+    return v - 2 * dot(v, n) * n;
+}
+
+inline vec3 refract(const vec3 & uv, const vec3 & n, const double etai_over_etat) {
+    auto cos_theta = std::fmin(dot(-1.0 * uv, n), 1.0);
+    vec3 perpendicular = etai_over_etat * (uv + cos_theta * n);
+    vec3 parallel = -1.0 * std::sqrt(std::fabs(1.0 - perpendicular.length_squared())) * n;
+    return parallel + perpendicular;
+}
 
 typedef vec3 point3;   // 3D point
 typedef vec3 color;    // RGB color
