@@ -33,8 +33,15 @@ public:
         e[2] *= static_cast<T>(v.e[2]);
         return *this;
     }
+    
+    basic_vec3<T>& operator*=(double const t) {
+        e[0] *= t;
+        e[1] *= t;
+        e[2] *= t;
+        return *this;
+    }
 
-    basic_vec3<T>& operator/=(const double t) {
+    basic_vec3<T>& operator/=(double const t) {
         return *this *= 1/t;
     }
 
