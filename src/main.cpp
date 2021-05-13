@@ -9,6 +9,42 @@
 #include "sphere.h"
 #include "moving_sphere.h"
 #include "material.h"
+#include "aarect.h"
+#include "box.h"
+
+hittable_list simple_light() {
+    hittable_list objects;
+
+    auto pertext = std::make_shared<noise_texture>(4);
+    objects.add(std::make_shared<sphere>(point3(0,-1000,0), 1000, std::make_shared<lambertian>(pertext)));
+    objects.add(std::make_shared<sphere>(point3(0,2,0), 2, std::make_shared<lambertian>(pertext)));
+
+    auto difflight = std::make_shared<diffuse_light>(color(4,4,4));
+    objects.add(std::make_shared<xy_rect>(3, 5, 1, 3, -2, difflight));
+
+    return objects;
+}
+
+hittable_list cornell_box() {
+    hittable_list objects;
+
+    auto red   = std::make_shared<lambertian>(color(.65, .05, .05));
+    auto white = std::make_shared<lambertian>(color(.73, .73, .73));
+    auto green = std::make_shared<lambertian>(color(.12, .45, .15));
+    auto light = std::make_shared<diffuse_light>(color(15, 15, 15));
+
+    objects.add(std::make_shared<yz_rect>(0, 555, 0, 555, 555, green));
+    objects.add(std::make_shared<yz_rect>(0, 555, 0, 555, 0, red));
+    objects.add(std::make_shared<xz_rect>(213, 343, 227, 332, 554, light));
+    objects.add(std::make_shared<xz_rect>(0, 555, 0, 555, 0, white));
+    objects.add(std::make_shared<xz_rect>(0, 555, 0, 555, 555, white));
+    objects.add(std::make_shared<xy_rect>(0, 555, 0, 555, 555, white));
+
+    objects.add(std::make_shared<box>(point3(130, 0, 65), point3(295, 165, 230), white));
+    objects.add(std::make_shared<box>(point3(265, 0, 295), point3(430, 330, 460), white));
+
+    return objects;
+}
 
 hittable_list two_perlin_spheres() {
     hittable_list objects;
@@ -102,12 +138,11 @@ color ray_color(ray const & r, const color& background, const hittable& world, i
 int main() {
 
     // Image
-    const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
+    auto aspect_ratio = 16.0 / 9.0;
+    int image_width = 400;
     int image_channels = 3;
-
-    const int samples_per_pixel = 100;
-    const int max_depth = 50;
+    int samples_per_pixel = 100;
+    int max_depth = 50;
 
     // World
 
@@ -119,7 +154,7 @@ int main() {
     auto aperture = 0.0;
     color background(0,0,0);
 
-    switch (2) {
+    switch (0) {
         case 1:
             world = random_scene();
             background = color(0.70, 0.80, 1.00);
@@ -135,13 +170,31 @@ int main() {
             lookat = point3(0,0,0);
             vfov = 20.0;
             break;
-        default:
         case 3:
             world = earth();
             background = color(0.70, 0.80, 1.00);
             lookfrom = point3(13,2,3);
             lookat = point3(0,0,0);
             vfov = 20.0;
+            break;
+        case 4:
+            world = simple_light();
+            samples_per_pixel = 400;
+            background = color(0,0,0);
+            lookfrom = point3(26,3,6);
+            lookat = point3(0,2,0);
+            vfov = 20.0;
+            break;
+        default:
+        case 5:
+            world = cornell_box();
+            aspect_ratio = 1.0;
+            image_width = 600;
+            samples_per_pixel = 200;
+            background = color(0,0,0);
+            lookfrom = point3(278, 278, -800);
+            lookat = point3(278, 278, 0);
+            vfov = 40.0;
             break;
     }
 
