@@ -153,6 +153,7 @@
     <ClInclude Include="..\..\..\src\camera.h" />
     <ClInclude Include="..\..\..\src\color.h" />
     <ClInclude Include="..\..\..\src\common.h" />
+    <ClInclude Include="..\..\..\src\constant_medium.h" />
     <ClInclude Include="..\..\..\src\hittable.h" />
     <ClInclude Include="..\..\..\src\hittable_list.h" />
     <ClInclude Include="..\..\..\src\material.h" />

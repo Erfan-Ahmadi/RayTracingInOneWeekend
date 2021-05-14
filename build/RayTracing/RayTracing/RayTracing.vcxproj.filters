@@ -68,5 +68,8 @@
     <ClInclude Include="..\..\..\src\box.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\constant_medium.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

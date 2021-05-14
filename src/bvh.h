@@ -32,11 +32,7 @@ public:
     bvh_node() {};
     
     
-    bvh_node(hittable_list const & list, double time0, double time1)
-        : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
-    {}
-    
-    bvh_node(std::vector<std::shared_ptr<hittable>> & src_objects, size_t start, size_t end, double time0, double time1) {
+    bvh_node(std::vector<std::shared_ptr<hittable>> const & src_objects, size_t start, size_t end, double time0, double time1) {
         auto objects = src_objects;
         int axis = random_int(0, 2);
         auto comparator = (axis == 0) ? box_x_compare
@@ -64,7 +60,7 @@ public:
             right = std::make_shared<bvh_node>(objects, mid, end, time0, time1);
         }
 
-        auto box_left, box_right;
+        aabb box_left, box_right;
         
         if (  !left->bounding_box (time0, time1, box_left)
            || !right->bounding_box(time0, time1, box_right)
@@ -73,7 +69,11 @@ public:
         
         box = surrounding_box(box_left, box_right);
     }
-
+    
+    bvh_node(hittable_list const & list, double time0, double time1)
+        : bvh_node(list.objects, 0, list.objects.size(), time0, time1)
+    {}
+    
     virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override {
         if(!box.hit(r, t_min, t_max)) {
             return false;
